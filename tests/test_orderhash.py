@@ -14,7 +14,7 @@ class TestOrderHashManager:
 
         subaccount_id = address.get_subaccount_id(index=0)
 
-        url = network.lcd_endpoint + "/injective/exchange/v1beta1/exchange/" + subaccount_id
+        url = f"{network.lcd_endpoint}/injective/exchange/v1beta1/exchange/{subaccount_id}"
         requests_mock.get(url, json={"nonce": 0})
         order_hash_manager = OrderHashManager(address=address, network=network, subaccount_indexes=[0])
 

@@ -73,14 +73,13 @@ class MsgBroadcasterWithPk:
         composer = composer or Composer(network=client.network.string())
         account_config = StandardAccountBroadcasterConfig(private_key=private_key)
         fee_calculator = SimulatedTransactionFeeCalculator(client=client, composer=composer)
-        instance = cls(
+        return cls(
             network=network,
             account_config=account_config,
             client=client,
             composer=composer,
             fee_calculator=fee_calculator,
         )
-        return instance
 
     @classmethod
     def new_without_simulation(
@@ -94,14 +93,13 @@ class MsgBroadcasterWithPk:
         composer = composer or Composer(network=client.network.string())
         account_config = StandardAccountBroadcasterConfig(private_key=private_key)
         fee_calculator = MessageBasedTransactionFeeCalculator(client=client, composer=composer)
-        instance = cls(
+        return cls(
             network=network,
             account_config=account_config,
             client=client,
             composer=composer,
             fee_calculator=fee_calculator,
         )
-        return instance
 
     @classmethod
     def new_for_grantee_account_using_simulation(
@@ -115,14 +113,13 @@ class MsgBroadcasterWithPk:
         composer = composer or Composer(network=client.network.string())
         account_config = GranteeAccountBroadcasterConfig(grantee_private_key=grantee_private_key, composer=composer)
         fee_calculator = SimulatedTransactionFeeCalculator(client=client, composer=composer)
-        instance = cls(
+        return cls(
             network=network,
             account_config=account_config,
             client=client,
             composer=composer,
             fee_calculator=fee_calculator,
         )
-        return instance
 
     @classmethod
     def new_for_grantee_account_without_simulation(
@@ -136,14 +133,13 @@ class MsgBroadcasterWithPk:
         composer = composer or Composer(network=client.network.string())
         account_config = GranteeAccountBroadcasterConfig(grantee_private_key=grantee_private_key, composer=composer)
         fee_calculator = MessageBasedTransactionFeeCalculator(client=client, composer=composer)
-        instance = cls(
+        return cls(
             network=network,
             account_config=account_config,
             client=client,
             composer=composer,
             fee_calculator=fee_calculator,
         )
-        return instance
 
     async def broadcast(self, messages: List[any_pb2.Any]):
         # Only force initialization of timeout_height and account info (number and sequence) if they are not initialized
@@ -173,10 +169,7 @@ class MsgBroadcasterWithPk:
         sig = self._account_config.trading_private_key.sign(sign_doc.SerializeToString())
         tx_raw_bytes = transaction.get_tx_data(sig, self._account_config.trading_public_key)
 
-        # broadcast tx: send_tx_async_mode, send_tx_sync_mode
-        transaction_result = await self._client.send_tx_sync_mode(tx_raw_bytes)
-
-        return transaction_result
+        return await self._client.send_tx_sync_mode(tx_raw_bytes)
 
 
 class StandardAccountBroadcasterConfig(BroadcasterAccountConfig):
@@ -299,11 +292,11 @@ class MessageBasedTransactionFeeCalculator(TransactionFeeCalculator):
         transaction.with_fee(fee=fee)
 
     def _message_type(self, message: any_pb2.Any) -> str:
-        if isinstance(message, any_pb2.Any):
-            message_type = message.type_url
-        else:
-            message_type = message.DESCRIPTOR.full_name
-        return message_type
+        return (
+            message.type_url
+            if isinstance(message, any_pb2.Any)
+            else message.DESCRIPTOR.full_name
+        )
 
     def _calculate_gas_limit(self, messages: List[any_pb2.Any]) -> int:
         total_gas_limit = Decimal("0")

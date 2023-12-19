@@ -5,7 +5,7 @@ import pytest
 def inj_token_meta():
     from pyinjective.proto.exchange.injective_spot_exchange_rpc_pb2 import TokenMeta
 
-    token = TokenMeta(
+    return TokenMeta(
         name="Injective Protocol",
         address="0xe28b3B32B6c345A34Ff64674606124Dd5Aceca30",
         symbol="INJ",
@@ -14,14 +14,12 @@ def inj_token_meta():
         updated_at=1681739137644,
     )
 
-    return token
-
 
 @pytest.fixture
 def ape_token_meta():
     from pyinjective.proto.exchange.injective_spot_exchange_rpc_pb2 import TokenMeta
 
-    token = TokenMeta(
+    return TokenMeta(
         name="APE",
         address="0x0000000000000000000000000000000000000000",
         symbol="APE",
@@ -30,14 +28,12 @@ def ape_token_meta():
         updated_at=1681739137646,
     )
 
-    return token
-
 
 @pytest.fixture
 def usdt_token_meta():
     from pyinjective.proto.exchange.injective_spot_exchange_rpc_pb2 import TokenMeta
 
-    token = TokenMeta(
+    return TokenMeta(
         name="USDT",
         address="0x0000000000000000000000000000000000000000",
         symbol="USDT",
@@ -46,14 +42,12 @@ def usdt_token_meta():
         updated_at=1681739137645,
     )
 
-    return token
-
 
 @pytest.fixture
 def usdt_token_meta_second_denom():
     from pyinjective.proto.exchange.injective_spot_exchange_rpc_pb2 import TokenMeta
 
-    token = TokenMeta(
+    return TokenMeta(
         name="USDT Second Denom",
         address="0x0000000000000000000000000000000000000000",
         symbol="USDT",
@@ -62,14 +56,12 @@ def usdt_token_meta_second_denom():
         updated_at=1691739137645,
     )
 
-    return token
-
 
 @pytest.fixture
 def usdt_perp_token_meta():
     from pyinjective.proto.exchange.injective_derivative_exchange_rpc_pb2 import TokenMeta
 
-    token = TokenMeta(
+    return TokenMeta(
         name="Tether",
         address="0xdAC17F958D2ee523a2206206994597C13D831ec7",
         symbol="USDTPerp",
@@ -78,14 +70,12 @@ def usdt_perp_token_meta():
         updated_at=1683929869866,
     )
 
-    return token
-
 
 @pytest.fixture
 def ape_usdt_spot_market_meta(ape_token_meta, usdt_token_meta_second_denom):
     from pyinjective.proto.exchange.injective_spot_exchange_rpc_pb2 import SpotMarketInfo
 
-    market = SpotMarketInfo(
+    return SpotMarketInfo(
         market_id="0x8b67e705bb4e09c88aecfc295569481dbf2fe1d5efe364651fbe72385938e000",
         market_status="active",
         ticker="APE/USDT",
@@ -100,14 +90,12 @@ def ape_usdt_spot_market_meta(ape_token_meta, usdt_token_meta_second_denom):
         min_quantity_tick_size="1000000000000000",
     )
 
-    return market
-
 
 @pytest.fixture
 def inj_usdt_spot_market_meta(inj_token_meta, usdt_token_meta):
     from pyinjective.proto.exchange.injective_spot_exchange_rpc_pb2 import SpotMarketInfo
 
-    market = SpotMarketInfo(
+    return SpotMarketInfo(
         market_id="0x7a57e705bb4e09c88aecfc295569481dbf2fe1d5efe364651fbe72385938e9b0",
         market_status="active",
         ticker="INJ/USDT",
@@ -121,8 +109,6 @@ def inj_usdt_spot_market_meta(inj_token_meta, usdt_token_meta):
         min_price_tick_size="0.000000000000001",
         min_quantity_tick_size="1000000000000000",
     )
-
-    return market
 
 
 @pytest.fixture
@@ -145,7 +131,7 @@ def btc_usdt_perp_market_meta(usdt_perp_token_meta):
         last_timestamp=1684763442,
     )
 
-    market = DerivativeMarketInfo(
+    return DerivativeMarketInfo(
         market_id="0x4ca0f92fc28be0c9761326016b5a1a2177dd6375558365116b5bdda9abc229ce",
         market_status="active",
         ticker="BTC/USDT PERP",
@@ -167,14 +153,12 @@ def btc_usdt_perp_market_meta(usdt_perp_token_meta):
         perpetual_market_funding=perpetual_market_funding,
     )
 
-    return market
-
 
 @pytest.fixture
 def first_match_bet_market_meta(inj_usdt_spot_market_meta):
     from pyinjective.proto.exchange.injective_derivative_exchange_rpc_pb2 import BinaryOptionsMarketInfo
 
-    market = BinaryOptionsMarketInfo(
+    return BinaryOptionsMarketInfo(
         market_id="0x230dcce315364ff6360097838701b14713e2f4007d704df20ed3d81d09eec957",
         market_status="active",
         ticker="5fdbe0b1-1707800399-WAS",
@@ -191,5 +175,3 @@ def first_match_bet_market_meta(inj_usdt_spot_market_meta):
         min_price_tick_size="10000",
         min_quantity_tick_size="1",
     )
-
-    return market

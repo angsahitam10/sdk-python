@@ -68,7 +68,7 @@ class OrderHashManager:
 
         for i in subaccount_indexes:
             subaccount_id = address.get_subaccount_id(index=i)
-            url = network.lcd_endpoint + "/injective/exchange/v1beta1/exchange/" + subaccount_id
+            url = f"{network.lcd_endpoint}/injective/exchange/v1beta1/exchange/{subaccount_id}"
             res = requests.get(url=url)
             nonce = res.json()["nonce"]
             self.subacc_nonces[i] = [subaccount_id, nonce + 1]
@@ -145,4 +145,4 @@ def build_eip712_msg(order, nonce):
 def hash_order(msg):
     signable_message = msg.signable_message
     hex_digest = hash_eip191_message(signable_message=signable_message).hex()
-    return "0x" + hex_digest
+    return f"0x{hex_digest}"

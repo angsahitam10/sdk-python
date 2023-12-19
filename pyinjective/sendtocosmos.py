@@ -39,7 +39,7 @@ class Peggo:
         receiver_ethereum_address = Address.get_ethereum_address(receiver_address)
         receiver_address_checksum = web3.to_checksum_address(receiver_ethereum_address)
         receiver_slice = receiver_address_checksum[2:]
-        receiver_padded_address = "0x" + receiver_slice.zfill(64)
+        receiver_padded_address = f"0x{receiver_slice.zfill(64)}"
 
         destination = web3.to_bytes(hexstr=receiver_padded_address)
 
@@ -72,7 +72,9 @@ class Peggo:
                 f"Transferred {amount} {token_contract} from {sender_ethereum_address} to {receiver}"
             )
             LoggerProvider().logger_for_class(logging_class=self.__class__).info(
-                "Transaction hash: {}".format(Web3.to_hex(tx_hash))
+                f"Transaction hash: {Web3.to_hex(tx_hash)}"
             )
         except Exception as e:
-            LoggerProvider().logger_for_class(logging_class=self.__class__).info("Transaction failed {}".format(e))
+            LoggerProvider().logger_for_class(logging_class=self.__class__).info(
+                f"Transaction failed {e}"
+            )

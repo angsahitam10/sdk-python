@@ -37,7 +37,7 @@ async def main() -> None:
 
             dict = {}
             for i, order_hash in enumerate(failed_order_hashes):
-                hash = "0x" + base64.b64decode(order_hash).hex()
+                hash = f"0x{base64.b64decode(order_hash).hex()}"
                 dict[hash] = failed_order_codes[i]
 
             print(dict)

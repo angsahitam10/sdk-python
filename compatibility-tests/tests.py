@@ -100,8 +100,7 @@ class Transaction:
         signature_compact_keccak = privkey.sign_deterministic(
             message_bytes, hashfunc=sha3.keccak_256, sigencode=ecdsa.util.sigencode_string_canonize
         )
-        signature_base64_str = base64.b64encode(signature_compact_keccak).decode("utf-8")
-        return signature_base64_str
+        return base64.b64encode(signature_compact_keccak).decode("utf-8")
 
     def _get_sign_message(self) -> Dict[str, Any]:
         return {
@@ -162,11 +161,7 @@ async def main() -> None:
 
 async def get_account_num_seq(address: str) -> (int, int):
     async with aiohttp.ClientSession() as session:
-        async with session.request(
-            "GET",
-            "http://staking-lcd-testnet.injective.network/cosmos/auth/v1beta1/accounts/" + address,
-            headers={"Accept-Encoding": "application/json"},
-        ) as response:
+        async with session.request("GET", f"http://staking-lcd-testnet.injective.network/cosmos/auth/v1beta1/accounts/{address}", headers={"Accept-Encoding": "application/json"}) as response:
             if response.status != 200:
                 print(await response.text())
                 raise ValueError("HTTP response status", response.status)

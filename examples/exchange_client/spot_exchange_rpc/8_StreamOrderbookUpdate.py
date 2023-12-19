@@ -12,7 +12,7 @@ class PriceLevel:
         self.timestamp = timestamp
 
     def __str__(self) -> str:
-        return "price: {} | quantity: {} | timestamp: {}".format(self.price, self.quantity, self.timestamp)
+        return f"price: {self.price} | quantity: {self.quantity} | timestamp: {self.timestamp}"
 
 
 class Orderbook:
@@ -80,12 +80,10 @@ def apply_orderbook_update(orderbook: Orderbook, updates):
     # ensure we have not missed any update
     if updates.sequence > (orderbook.sequence + 1):
         raise Exception(
-            "missing orderbook update events from stream, must restart: {} vs {}".format(
-                updates.sequence, (orderbook.sequence + 1)
-            )
+            f"missing orderbook update events from stream, must restart: {updates.sequence} vs {orderbook.sequence + 1}"
         )
 
-    print("updating orderbook with updates at sequence {}".format(updates.sequence))
+    print(f"updating orderbook with updates at sequence {updates.sequence}")
 
     # update orderbook
     orderbook.sequence = updates.sequence
@@ -96,9 +94,8 @@ def apply_orderbook_update(orderbook: Orderbook, updates):
                 orderbook.levels[direction][level.price] = PriceLevel(
                     price=Decimal(level.price), quantity=Decimal(level.quantity), timestamp=level.timestamp
                 )
-            else:
-                if level.price in orderbook.levels[direction]:
-                    del orderbook.levels[direction][level.price]
+            elif level.price in orderbook.levels[direction]:
+                del orderbook.levels[direction][level.price]
 
     # sort the level numerically
     buys = sorted(orderbook.levels["buys"].values(), key=lambda x: x.price, reverse=True)
@@ -108,7 +105,7 @@ def apply_orderbook_update(orderbook: Orderbook, updates):
     if len(buys) > 0 and len(sells) > 0:
         highest_buy = buys[0].price
         lowest_sell = sells[-1].price
-        print("Max buy: {} - Min sell: {}".format(highest_buy, lowest_sell))
+        print(f"Max buy: {highest_buy} - Min sell: {lowest_sell}")
         if highest_buy >= lowest_sell:
             raise Exception("crossed orderbook, must restart")
 
