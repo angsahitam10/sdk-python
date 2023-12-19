@@ -207,7 +207,7 @@ class Network:
             "sentry",
         ]
         if node not in nodes:
-            raise ValueError("Must be one of {}".format(nodes))
+            raise ValueError(f"Must be one of {nodes}")
 
         if node == "lb":
             lcd_endpoint = "https://testnet.sentry.lcd.injective.network:443"
@@ -216,7 +216,6 @@ class Network:
             grpc_exchange_endpoint = "testnet.sentry.exchange.grpc.injective.network:443"
             grpc_explorer_endpoint = "testnet.sentry.explorer.grpc.injective.network:443"
             cookie_assistant = BareMetalLoadBalancedCookieAssistant()
-            use_secure_connection = True
         else:
             lcd_endpoint = "https://testnet.lcd.injective.network:443"
             tm_websocket_endpoint = "wss://testnet.tm.injective.network:443/websocket"
@@ -224,8 +223,7 @@ class Network:
             grpc_exchange_endpoint = "testnet.exchange.grpc.injective.network:443"
             grpc_explorer_endpoint = "testnet.explorer.grpc.injective.network:443"
             cookie_assistant = DisabledCookieAssistant()
-            use_secure_connection = True
-
+        use_secure_connection = True
         return cls(
             lcd_endpoint=lcd_endpoint,
             tm_websocket_endpoint=tm_websocket_endpoint,
@@ -249,7 +247,7 @@ class Network:
             "sentry3",  # us, prod
         ]
         if node not in nodes:
-            raise ValueError("Must be one of {}".format(nodes))
+            raise ValueError(f"Must be one of {nodes}")
 
         if node == "lb":
             lcd_endpoint = "https://sentry.lcd.injective.network:443"

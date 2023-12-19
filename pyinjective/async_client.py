@@ -110,7 +110,7 @@ class AsyncClient:
 
         # timeout height update routine
         self.cron = aiocron.crontab(
-            "* * * * * */{}".format(DEFAULT_TIMEOUTHEIGHT_SYNC_INTERVAL),
+            f"* * * * * */{DEFAULT_TIMEOUTHEIGHT_SYNC_INTERVAL}",
             func=self.sync_timeout_height,
             args=(),
             start=True,
@@ -205,14 +205,16 @@ class AsyncClient:
         tx = await self.stubTx.GetTx(tx_service.GetTxRequest(hash=tx_hash))
         request_ids = []
         for tx in tx.tx_response.logs:
-            request_event = [event for event in tx.events if event.type == "request" or event.type == "report"]
+            request_event = [
+                event for event in tx.events if event.type in ["request", "report"]
+            ]
             if len(request_event) == 1:
                 attrs = request_event[0].attributes
                 attr_id = [attr for attr in attrs if attr.key == "id"]
                 if len(attr_id) == 1:
                     request_id = attr_id[0].value
                     request_ids.append(int(request_id))
-        if len(request_ids) == 0:
+        if not request_ids:
             raise NotFoundError("Request Id is not found")
         return request_ids
 

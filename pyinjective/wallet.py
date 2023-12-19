@@ -256,18 +256,14 @@ class Address:
     def get_subaccount_id(self, index: int) -> str:
         """Return a hex representation of address"""
         id = index.to_bytes(12, byteorder="big").hex()
-        return "0x" + self.addr.hex() + id
+        return f"0x{self.addr.hex()}{id}"
 
     def get_ethereum_address(self) -> str:
-        return "0x" + self.addr.hex()
+        return f"0x{self.addr.hex()}"
 
     async def async_init_num_seq(self, lcd_endpoint: str) -> "Address":
         async with aiohttp.ClientSession() as session:
-            async with session.request(
-                "GET",
-                lcd_endpoint + "/cosmos/auth/v1beta1/accounts/" + self.to_acc_bech32(),
-                headers={"Accept-Encoding": "application/json"},
-            ) as response:
+            async with session.request("GET", f"{lcd_endpoint}/cosmos/auth/v1beta1/accounts/{self.to_acc_bech32()}", headers={"Accept-Encoding": "application/json"}) as response:
                 if response.status != 200:
                     print(await response.text())
                     raise ValueError("HTTP response status", response.status)

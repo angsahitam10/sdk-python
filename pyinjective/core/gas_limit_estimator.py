@@ -27,12 +27,11 @@ class GasLimitEstimator(ABC):
             ),
             None,
         )
-        if estimator_class is None:
-            estimator = DefaultGasLimitEstimator()
-        else:
-            estimator = estimator_class(message=message)
-
-        return estimator
+        return (
+            DefaultGasLimitEstimator()
+            if estimator_class is None
+            else estimator_class(message=message)
+        )
 
     @abstractmethod
     def gas_limit(self) -> int:
@@ -40,22 +39,22 @@ class GasLimitEstimator(ABC):
 
     @staticmethod
     def message_type(message: any_pb2.Any) -> str:
-        if isinstance(message, any_pb2.Any):
-            message_type = message.type_url
-        else:
-            message_type = message.DESCRIPTOR.full_name
-        return message_type
+        return (
+            message.type_url
+            if isinstance(message, any_pb2.Any)
+            else message.DESCRIPTOR.full_name
+        )
 
     @abstractmethod
     def _message_class(self, message: any_pb2.Any):
         ...
 
     def _parsed_message(self, message: any_pb2.Any) -> any_pb2.Any:
-        if isinstance(message, any_pb2.Any):
-            parsed_message = self._message_class(message=message).FromString(message.value)
-        else:
-            parsed_message = message
-        return parsed_message
+        return (
+            self._message_class(message=message).FromString(message.value)
+            if isinstance(message, any_pb2.Any)
+            else message
+        )
 
 
 class DefaultGasLimitEstimator(GasLimitEstimator):
@@ -219,7 +218,8 @@ class ExecGasLimitEstimator(GasLimitEstimator):
 
     def gas_limit(self) -> int:
         total = sum(
-            [GasLimitEstimator.for_message(message=inner_message).gas_limit() for inner_message in self._message.msgs]
+            GasLimitEstimator.for_message(message=inner_message).gas_limit()
+            for inner_message in self._message.msgs
         )
         total += self.DEFAULT_GAS_LIMIT
 
@@ -289,11 +289,11 @@ class GovernanceGasLimitEstimator(GasLimitEstimator):
         return int(self.BASIC_REFERENCE_GAS_LIMIT * 15)
 
     def _message_class(self, message: any_pb2.Any):
-        if "MsgDeposit" in self.message_type(message=message):
-            message_class = gov_tx_pb.MsgDeposit
-        else:
-            message_class = gov_tx_pb.MsgSubmitProposal
-        return message_class
+        return (
+            gov_tx_pb.MsgDeposit
+            if "MsgDeposit" in self.message_type(message=message)
+            else gov_tx_pb.MsgSubmitProposal
+        )
 
 
 class GenericExchangeGasLimitEstimator(GasLimitEstimator):

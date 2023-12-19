@@ -79,8 +79,8 @@ async def main() -> None:
     res = await client.send_tx_sync_mode(tx_raw_bytes)
     print("---Transaction Response---")
     print(res)
-    print("gas wanted: {}".format(gas_limit))
-    print("gas fee: {} INJ".format(gas_fee))
+    print(f"gas wanted: {gas_limit}")
+    print(f"gas fee: {gas_fee} INJ")
 
 
 if __name__ == "__main__":

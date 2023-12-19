@@ -22,19 +22,19 @@ class TestComposer:
 
     @pytest.fixture
     def basic_composer(self, inj_usdt_spot_market, btc_usdt_perp_market, first_match_bet_market):
-        composer = Composer(
+        return Composer(
             network=Network.devnet().string(),
             spot_markets={inj_usdt_spot_market.id: inj_usdt_spot_market},
             derivative_markets={btc_usdt_perp_market.id: btc_usdt_perp_market},
-            binary_option_markets={first_match_bet_market.id: first_match_bet_market},
+            binary_option_markets={
+                first_match_bet_market.id: first_match_bet_market
+            },
             tokens={
                 inj_usdt_spot_market.base_token.symbol: inj_usdt_spot_market.base_token,
                 inj_usdt_spot_market.quote_token.symbol: inj_usdt_spot_market.quote_token,
                 btc_usdt_perp_market.quote_token.symbol: btc_usdt_perp_market.quote_token,
             },
         )
-
-        return composer
 
     def test_composer_initialization_from_ini_files(self):
         composer = Composer(network=Network.devnet().string())

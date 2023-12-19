@@ -131,10 +131,10 @@ class Composer:
         elif not kwargs.get("is_buy") and not kwargs.get("is_po"):
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.SELL
 
-        elif kwargs.get("is_buy") and kwargs.get("is_po"):
+        elif kwargs.get("is_buy"):
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.BUY_PO
 
-        elif not kwargs.get("is_buy") and kwargs.get("is_po"):
+        else:
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.SELL_PO
 
         return injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.SpotOrder(
@@ -181,23 +181,11 @@ class Composer:
         elif not kwargs.get("is_buy") and not kwargs.get("is_po"):
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.SELL
 
-        elif kwargs.get("is_buy") and kwargs.get("is_po"):
+        elif kwargs.get("is_buy"):
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.BUY_PO
 
-        elif not kwargs.get("is_buy") and kwargs.get("is_po"):
+        else:
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.SELL_PO
-
-        elif kwargs.get("stop_buy"):
-            order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.STOP_BUY
-
-        elif kwargs.get("stop_sell"):
-            order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.STOP_SEll
-
-        elif kwargs.get("take_buy"):
-            order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.TAKE_BUY
-
-        elif kwargs.get("take_sell"):
-            order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.TAKE_SELL
 
         return injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.DerivativeOrder(
             market_id=market_id,
@@ -245,10 +233,10 @@ class Composer:
         elif not kwargs.get("is_buy") and not kwargs.get("is_po"):
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.SELL
 
-        elif kwargs.get("is_buy") and kwargs.get("is_po"):
+        elif kwargs.get("is_buy"):
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.BUY_PO
 
-        elif not kwargs.get("is_buy") and kwargs.get("is_po"):
+        else:
             order_type = injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.OrderType.SELL_PO
 
         return injective_dot_exchange_dot_v1beta1_dot_exchange__pb2.DerivativeOrder(
@@ -923,12 +911,10 @@ class Composer:
             "/injective.oracle.v1beta1.MsgRelayProviderPricesResponse":
                 injective_oracle_tx_pb.MsgRelayProviderPrices,
         }
-        # fmt: on
-        msgs = []
-        for msg in data.msg_responses:
-            msgs.append(header_map[msg.type_url].FromString(msg.value))
-
-        return msgs
+        return [
+            header_map[msg.type_url].FromString(msg.value)
+            for msg in data.msg_responses
+        ]
 
     @staticmethod
     def UnpackMsgExecResponse(msg_type, data):
@@ -977,10 +963,7 @@ class Composer:
             "MsgInstantBinaryOptionsMarketLaunch":
                 injective_exchange_tx_pb.MsgInstantBinaryOptionsMarketLaunchResponse,
         }
-        # fmt: on
-
-        responses = [header_map[msg_type].FromString(result) for result in data.results]
-        return responses
+        return [header_map[msg_type].FromString(result) for result in data.results]
 
     @staticmethod
     def UnpackTransactionMessages(transaction):

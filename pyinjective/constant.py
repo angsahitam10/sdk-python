@@ -53,9 +53,7 @@ class Denom:
 
     @classmethod
     def load_peggy_denom(cls, network, symbol):
-        if network == "devnet":
-            config = devnet_config
-        elif network == "local":
+        if network in ["devnet", "local"]:
             config = devnet_config
         elif network == "testnet":
             config = testnet_config
